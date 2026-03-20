@@ -1,6 +1,9 @@
 variables:
   - name: installation
     required: true
+  - name: stage
+    required: false
+    default: none
   - name: app
     required: true
 layers:
@@ -30,6 +33,60 @@ layers:
         values:
           merge:
             strategy: ConfigMapsAndSecretsInLayerOrder
+  - id: default-stages
+    path:
+      directory: default/stages
+      required: false
+    values:
+      path:
+        directory: << stage >>
+        required: false
+      configMap:
+        name: config.yaml
+        required: false
+    templates:
+      path:
+        directory: << stage >>/apps/<< app >>
+        required: false
+      configMap:
+        name: configmap-values.yaml.template
+        required: false
+        values:
+          merge:
+            strategy: ConfigMapsInLayerOrder
+      secret:
+        name: secret-values.yaml.template
+        required: false
+        values:
+          merge:
+            strategy: SecretsInLayerOrder
+  - id: stages
+    path:
+      directory: stages
+      required: false
+    values:
+      path:
+        directory: << stage >>
+        required: false
+      configMap:
+        name: config.yaml
+        required: false
+    templates:
+      path:
+        directory: << stage >>/apps/<< app >>
+        required: false
+      configMap:
+        name: configmap-values.yaml.template
+        required: false
+        values:
+          merge:
+            strategy: ConfigMapsInLayerOrder
+      secret:
+        name: secret-values.yaml.template
+        required: false
+        values:
+          merge:
+            strategy: SecretsInLayerOrder
   - id: management-cluster
     path:
       directory: installations/<< installation >>
