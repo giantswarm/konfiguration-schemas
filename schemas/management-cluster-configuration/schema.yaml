@@ -6,6 +6,9 @@ variables:
     default: none
   - name: app
     required: true
+  - name: instance
+    required: false
+    default: ""
 layers:
   - id: defaults
     path:
@@ -102,7 +105,7 @@ layers:
         required: true
     templates:
       path:
-        directory: apps/<< app >>
+        directory: apps/<< app >>/<< instance >>
         required: false
       configMap:
         name: configmap-values.yaml.patch
